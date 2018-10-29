@@ -72,6 +72,7 @@ class Homework:
 		result = {}
 		result['Asset Price'] = GDemo.getAssetPrice(ttm,Debt,marketCap)
 		result['Default Prob'] = GDemo.calculateProb(s0=result['Asset Price'],ttm = ttm,Debt = Debt)
+		result['Market Cap'] = marketCap
 		return result
 
 
@@ -95,6 +96,7 @@ class Homework:
 		result['Illiquid Asset'] = illquidA0
 		result['Liquid Asset'] = LiquidA0
 		result['Illiquid Equity'] = illquidE0
+		result['Market Cap'] = marketCap
 		return result
 		
 

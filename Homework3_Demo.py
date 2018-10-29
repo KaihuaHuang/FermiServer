@@ -19,3 +19,4 @@ if __name__ =='__main__':
 	print('\nLiquid Asset Value:',result['Liquid Asset'])
 	print('Illiquid Asset Value:',result['Illiquid Asset'])
 	print('Illiquid Equity Value:',result['Illiquid Equity'])
+	print('Market Cap:', result['Market Cap'])
