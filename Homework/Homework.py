@@ -8,7 +8,7 @@ Created on Thu Sep  6 14:51:13 2018
 
 from VaR import ValueAtRisk
 from VaR import HistoricalVaR
-#from Liquidity import Liquidity
+from Liquidity import Liquidity
 from Geske import Geske
 from Data import FinanceData
 
@@ -74,7 +74,7 @@ class Homework:
 		result['Default Prob'] = GDemo.calculateProb(s0=result['Asset Price'],ttm = ttm,Debt = Debt)
 		return result
 
-	'''
+
 	# rf default 0.05
 
 	def Homework3(self,ticker,t1,t2,k1,k2,rf = 0.05,div = 0,sharpRatio = 1.6, steps = 200):
@@ -97,7 +97,7 @@ class Homework:
 		result['Illiquid Equity'] = illquidE0
 		return result
 		
-	'''
+
 
 '''
 tickerList = ['AMZN', 'MSFT', 'GOOG']

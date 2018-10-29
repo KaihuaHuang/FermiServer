@@ -13,7 +13,7 @@ class Geske(binomialTree):
 	'ttm and Debt are array'
 	def geske(self,s0,ttm,Debt):
 		index = len(ttm)-1
-		self.Tree(s0=s0,func = self.optionExercise(k=Debt[index]))
+		self.Tree(s0=s0,func = binomialTree.optionExercise(k=Debt[index]))
 
 		index = index - 1
 		while(index >= 0):
@@ -21,7 +21,7 @@ class Geske(binomialTree):
 			while(self.currStep>strikeStep+1):
 				self.reverse()
 
-			self.reverse(func = self.optionExercise(k=Debt[index]))
+			self.reverse(func = binomialTree.optionExercise(k=Debt[index]))
 
 			index = index - 1
 
@@ -54,7 +54,7 @@ class Geske(binomialTree):
 	def calculateProb(self,s0,ttm,Debt):
 
 		index = len(ttm)-1
-		self.Tree(s0=s0,func = self.optionExercise(k=Debt[index]))
+		self.Tree(s0=s0,func = binomialTree.optionExercise(k=Debt[index]))
 
 		self.Prob = np.zeros(self.steps+1)
 		self.Prob = np.array((list(map(self.probOverride,self.options))))
@@ -64,7 +64,7 @@ class Geske(binomialTree):
 			while(self.currStep>strikeStep+1):
 				self.reverse()
 				self.reverseProb()
-			self.reverse(func = self.optionExercise(k=Debt[index]))
+			self.reverse(func = binomialTree.optionExercise(k=Debt[index]))
 			self.reverseProb(func = self.probOverride)
 			index = index - 1
 
