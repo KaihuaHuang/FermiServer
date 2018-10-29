@@ -4,18 +4,11 @@ Created on Thu Sep  6 14:51:13 2018
 
 @author: William Huang
 """
-'''
-import sys
-sys.path.append("./Data") 
-sys.path.append("./VaR")
-sys.path.append("./Geske") 
-sys.path.append("./Liquidity") 
-sys.path.append("./Binomial")
-'''
+
 
 from VaR import ValueAtRisk
 from VaR import HistoricalVaR
-from Liquidity import Liquidity
+#from Liquidity import Liquidity
 from Geske import Geske
 from Data import FinanceData
 
@@ -29,77 +22,82 @@ import pyodbc
 
 
 class Homework:
-    def __init__(self,approach='Yahoo'):
-        self.dataSource = FinanceData(approach)
+	def __init__(self,approach='Yahoo'):
+		self.dataSource = FinanceData(approach)
 
-    # start date 252, 0.01 default value
-    # check whether endDate is business date, if not move backward
-    def Homework1(self,tickerList,weight,notional,startDate = None,endDate = None,historicalWindow = 252,intervals = [0.995,0.99,0.98,0.975,0.95]):
-        if(startDate == None and endDate == None):
-            today = dt.date.today()
-            today = today - dt.timedelta(days =1)
-            # Get the latest business day
-            while(isbday(today,holidays = holidays.US()) == False):
-                today = today - dt.timedelta(days =1)
-
-
-            endDate = today
-            startDate = today + relativedelta(bdays=-historicalWindow)
+	# start date 252, 0.01 default value
+	# check whether endDate is business date, if not move backward
+	def Homework1(self,tickerList,weight,notional,startDate = None,endDate = None,historicalWindow = 252,intervals = [0.995,0.99,0.98,0.975,0.95]):
+		if(startDate == None and endDate == None):
+			today = dt.date.today()
+			today = today - dt.timedelta(days =1)
+			# Get the latest business day
+			while(isbday(today,holidays = holidays.US()) == False):
+				today = today - dt.timedelta(days =1)
 
 
-        result = {}
-        paraDict = {}
-        hisDict = {}
-        weight = np.array(weight)
-        priceTabel = self.dataSource.getPriceTable(tickerList,startDate.isoformat(),endDate.isoformat())
-        while(len(priceTabel) < historicalWindow):
-            startDate = startDate - dt.timedelta(historicalWindow - len(priceTabel))
-            priceTabel = self.dataSource.getPriceTable(tickerList, startDate.isoformat(), endDate.isoformat())
-        parametric = ValueAtRisk(0.95,priceTabel.as_matrix(),weight)
-        historical = HistoricalVaR(0.95,priceTabel.as_matrix(),weight)
-        for interval in intervals:
-            parametric.setCI(interval)
-            historical.setCI(interval)
-            key = interval
-            # the 1 here means daily var
-            paraDict[key] = parametric.var(marketValue=notional,window = 1)
-            hisDict[key] = historical.var(marketValue=notional,window = historicalWindow)
-        result['Parametric'] = paraDict
-        result['Historical'] = hisDict
-        return result
+			endDate = today
+			startDate = today + relativedelta(bdays=-historicalWindow)
 
-    # the unit for debt and marketCap is Billion
-    def Homework2(self,ticker, ttm, Debt, rf = 0.05, steps = 200):
-        vol = self.dataSource.getVol(ticker)
-        marketCap = self.dataSource.getMarketCap(ticker)
-        marketCap = marketCap/1000000000
-        GDemo = Geske(rf=rf,steps=steps,vol=vol,ttm=ttm[-1])
-        result = {}
-        result['Asset Price'] = GDemo.getAssetPrice(ttm,Debt,marketCap)
-        result['Default Prob'] = GDemo.calculateProb(s0=result['Asset Price'],ttm = ttm,Debt = Debt)
-        return result
-    
-    # rf default 0.05
 
-    def Homework3(self,ticker,t1,t2,k1,k2,rf = 0.05,div = 0,sharpRatio = 1.6, steps = 200):
-        result = {}
-        vol = self.dataSource.getVol(ticker)
-        marketCap = self.dataSource.getMarketCap(ticker)/1000000000
-        ttm = [t1,t2]
-        Debt = [k1,k2]
-        LiquidA0 = self.Homework2(ticker,ttm,Debt,steps = steps)['Asset Price']
-        temp = math.log((k1+k2)/(LiquidA0-marketCap))
-        adjustFactor = 1-(0.1-temp)*4
-        W = Liquidity.calibrateWealth(adjustFactor,0,0,0.3,1,1,LiquidA0)
-        illquidA0 = Liquidity.illquidPrice(W,W*adjustFactor,t1,rf,sharpRatio,0.3)
-        LDemo = Liquidity(k = 1, rf = rf, steps = steps, vol = vol, ttm = t1)
-        LDemo.liquidPrice(s0 = illquidA0,k1= k1,k2 = k2,t1 = t1, t2 = t2,div = div)
-        GDemo = Geske(rf=rf,steps=steps,vol=vol,ttm=t2)
-        illquidE0 = GDemo.geske(illquidA0,ttm,Debt)
-        result['Illiquid Asset'] = illquidA0
-        result['Liquid Asset'] = LiquidA0
-        result['Illiquid Equity'] = illquidE0
-        return result
+		result = {}
+		paraDict = {}
+		hisDict = {}
+		weight = np.array(weight)
+		priceTabel = self.dataSource.getPriceTable(tickerList,startDate.isoformat(),endDate.isoformat())
+		while(len(priceTabel) < historicalWindow):
+			startDate = startDate - dt.timedelta(historicalWindow - len(priceTabel))
+			priceTabel = self.dataSource.getPriceTable(tickerList, startDate.isoformat(), endDate.isoformat())
+		parametric = ValueAtRisk(0.95,priceTabel.as_matrix(),weight)
+		historical = HistoricalVaR(0.95,priceTabel.as_matrix(),weight)
+		for interval in intervals:
+			parametric.setCI(interval)
+			historical.setCI(interval)
+			key = interval
+			# the 1 here means daily var
+			paraDict[key] = parametric.var(marketValue=notional,window = 1)
+			hisDict[key] = historical.var(marketValue=notional,window = historicalWindow)
+		result['Parametric'] = paraDict
+		result['Historical'] = hisDict
+		result['Cov-Var Matrix'] = parametric.covMatrix()
+		return result
+
+
+	# the unit for debt and marketCap is Billion
+	def Homework2(self,ticker, ttm, Debt, rf = 0.05, steps = 200):
+		vol = self.dataSource.getVol(ticker)
+		marketCap = self.dataSource.getMarketCap(ticker)
+		marketCap = marketCap/1000000000
+		GDemo = Geske(rf=rf,steps=steps,vol=vol,ttm=ttm[-1])
+		result = {}
+		result['Asset Price'] = GDemo.getAssetPrice(ttm,Debt,marketCap)
+		result['Default Prob'] = GDemo.calculateProb(s0=result['Asset Price'],ttm = ttm,Debt = Debt)
+		return result
+
+	'''
+	# rf default 0.05
+
+	def Homework3(self,ticker,t1,t2,k1,k2,rf = 0.05,div = 0,sharpRatio = 1.6, steps = 200):
+		result = {}
+		vol = self.dataSource.getVol(ticker)
+		marketCap = self.dataSource.getMarketCap(ticker)/1000000000
+		ttm = [t1,t2]
+		Debt = [k1,k2]
+		LiquidA0 = self.Homework2(ticker,ttm,Debt,steps = steps)['Asset Price']
+		temp = math.log((k1+k2)/(LiquidA0-marketCap))
+		adjustFactor = 1-(0.1-temp)*4
+		W = Liquidity.calibrateWealth(adjustFactor,0,0,0.3,1,1,LiquidA0)
+		illquidA0 = Liquidity.illquidPrice(W,W*adjustFactor,t1,rf,sharpRatio,0.3)
+		LDemo = Liquidity(k = 1, rf = rf, steps = steps, vol = vol, ttm = t1)
+		LDemo.liquidPrice(s0 = illquidA0,k1= k1,k2 = k2,t1 = t1, t2 = t2,div = div)
+		GDemo = Geske(rf=rf,steps=steps,vol=vol,ttm=t2)
+		illquidE0 = GDemo.geske(illquidA0,ttm,Debt)
+		result['Illiquid Asset'] = illquidA0
+		result['Liquid Asset'] = LiquidA0
+		result['Illiquid Equity'] = illquidE0
+		return result
+		
+	'''
 
 '''
 tickerList = ['AMZN', 'MSFT', 'GOOG']
