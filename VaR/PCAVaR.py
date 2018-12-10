@@ -29,7 +29,7 @@ class PCAVaR(ValueAtRisk):
 		if(isinstance(universe,pd.DataFrame)):
 			universe = universe.values
 		self.universe = universe
-		self.universeReturnMatrix = np.diff(np.log(self.universe),axis=0)
+		self.universeReturnMatrix = np.nan_to_num(np.diff(np.log(self.universe),axis=0))
 
 	def getComponents(self,n_components = 2):
 		# Generate principle components

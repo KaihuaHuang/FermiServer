@@ -7,13 +7,14 @@ Created on Fri Jul 27 09:43:27 2018
 from VaR import ValueAtRisk
 from VaR import HistoricalVaR
 from VaR import PCAVaR
+from Data import FinanceData
 import pandas as pd
 import numpy as np
 
 if __name__ =='__main__':
 	print('--------Test Main----------')
 	weights = np.array([0.1,0.3,0.4,0.2])
-	data = pd.read_csv('Data/portfolio.csv', index_col='date', dtype=float, parse_dates=True)
+	data = pd.read_csv('VaR/Data/portfolio.csv', index_col='date', dtype=float, parse_dates=True)
 
 
 	print('--------data preview--------')
@@ -36,8 +37,17 @@ if __name__ =='__main__':
 	print('100 day - Var(Dollar):',HDemo.var(marketValue = 1000000,window = 100))
 
 	print('\n--------Single PCA VaR--------')
-	universe = pd.read_csv('Data/universe.csv',index_col = 'date',dtype=float,parse_dates=True)
-	singleStock = pd.read_csv('Data/singleStock.csv',index_col = 'date',dtype=float,parse_dates=True)
+	tickerList = pd.read_csv('VaR/Data/universeTickerList.csv', header=None).values.reshape(-1)
+	DataSource = FinanceData()
+	startDate = '2017-10-2'
+	endDate = '2018-8-31'
+	# Local Check first
+	universe = DataSource.getPriceTable(tickerList, startDate, endDate, localCheck='VaR/Data/universe.csv', update=True)
+	# universe = pd.read_csv('Data/universe.csv',index_col = 'date',dtype=float,parse_dates=True)
+
+	ticker = ['AIR',]
+	singleStock = DataSource.getPriceTable(ticker, startDate, endDate, localCheck='VaR/Data/singleStock.csv', update=True)
+	# singleStock = pd.read_csv('VaR/Data/singleStock.csv',index_col = 'date',dtype=float,parse_dates=True)
 	PDemoValidation = PCAVaR(0.95,singleStock,universe)
 	PDemoValidation.getComponents(3)
 	print('Using 220 stocks as universe to generate 3 components')
@@ -45,7 +55,9 @@ if __name__ =='__main__':
 	print('Single PCA VaR(Dollar):', PDemoValidation.var(marketValue = 1000000))
 
 	print('\n-------Portfolio PCA VaR---------')
-	data = pd.read_csv('Data/portfolio.csv', index_col='date', dtype=float, parse_dates=True)
+	portfolioTicker = ['AIR','MMM','DIS','UPS']
+	data = DataSource.getPriceTable(portfolioTicker, startDate, endDate, localCheck='VaR/Data/portfolio.csv', update=True)
+	# data = pd.read_csv('VaR/Data/portfolio.csv', index_col='date', dtype=float, parse_dates=True)
 	PDemoValidation.setPortfolio(data)
 	PDemoValidation.setWeights(weights)
 	print('Portfolio PCA VaR(Percentage):', PDemoValidation.var() * 100, '%')
