@@ -39,14 +39,16 @@ if __name__ =='__main__':
 	print('\n--------Single PCA VaR--------')
 	tickerList = pd.read_csv('VaR/Data/universeTickerList.csv', header=None).values.reshape(-1)
 	DataSource = FinanceData()
-	startDate = '2017-10-2'
-	endDate = '2018-8-31'
+
 	# Local Check first
-	universe = DataSource.getPriceTable(tickerList, startDate, endDate, localCheck='VaR/Data/universe.csv', update=True)
+	universe = DataSource.getPriceTable(tickerList, localCheck='VaR/Data/universe.csv', update=True)
+	# startDate = '2017-10-2'
+	# endDate = '2018-8-31'
+	# universe = DataSource.getPriceTable(tickerList, startDate, endDate, localCheck='VaR/Data/universe.csv', update=True)
 	# universe = pd.read_csv('Data/universe.csv',index_col = 'date',dtype=float,parse_dates=True)
 
 	ticker = ['AIR',]
-	singleStock = DataSource.getPriceTable(ticker, startDate, endDate, localCheck='VaR/Data/singleStock.csv', update=True)
+	singleStock = DataSource.getPriceTable(ticker)
 	# singleStock = pd.read_csv('VaR/Data/singleStock.csv',index_col = 'date',dtype=float,parse_dates=True)
 	PDemoValidation = PCAVaR(0.95,singleStock,universe)
 	PDemoValidation.getComponents(3)
@@ -56,7 +58,7 @@ if __name__ =='__main__':
 
 	print('\n-------Portfolio PCA VaR---------')
 	portfolioTicker = ['AIR','MMM','DIS','UPS']
-	data = DataSource.getPriceTable(portfolioTicker, startDate, endDate, localCheck='VaR/Data/portfolio.csv', update=True)
+	data = DataSource.getPriceTable(portfolioTicker)
 	# data = pd.read_csv('VaR/Data/portfolio.csv', index_col='date', dtype=float, parse_dates=True)
 	PDemoValidation.setPortfolio(data)
 	PDemoValidation.setWeights(weights)

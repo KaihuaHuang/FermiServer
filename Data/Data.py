@@ -13,6 +13,7 @@ import math
 import threading
 from bdateutil import isbday
 from bdateutil import relativedelta
+
 import holidays
 
 class FinanceData:
@@ -70,8 +71,8 @@ class FinanceData:
 				table = pd.DataFrame(columns = [ticker,'date'])
 				table = table.set_index('date')
 			return table
-		
-	def getPriceTable(self,tickerList,startDate,endDate,localCheck = None,dateAscending = True, update = False):
+
+	def getPriceTable(self,tickerList,startDate = None,endDate = None,localCheck = None,dateAscending = True, update = False):
 		# Get the price series for multiple tickers
 		# ----Input-----
 		# tickerList: ticker name for multiple stocks
@@ -82,8 +83,16 @@ class FinanceData:
 		# update: whether to update local file
 		# ----output----
 		# price series for single stock in pandas DataFrame format and use date as index
-		startDate = dt.datetime.strptime(startDate,'%Y-%m-%d').date()
-		endDate = dt.datetime.strptime(endDate,'%Y-%m-%d').date()
+
+		if(endDate == None):
+			endDate = dt.date.today() + relativedelta(bdays=-1)
+		else:
+			endDate = dt.datetime.strptime(endDate, '%Y-%m-%d').date()
+		if(startDate == None):
+			startDate = endDate + relativedelta(bdays=-252)
+		else:
+			startDate = dt.datetime.strptime(startDate,'%Y-%m-%d').date()
+
 
 		if(startDate > endDate):
 			raise Exception('startDate is later than endDate')
@@ -97,7 +106,7 @@ class FinanceData:
 			except:
 				raise Exception('Read Local File Error')
 
-			if(np.all(tickerList == localFile.columns) == False):
+			if(np.all([ticker in localFile.columns for ticker in tickerList]) == False):
 				raise Exception('''Local File Columns Doesn't Match Ticker List''')
 
 			# Make sure it's business day
