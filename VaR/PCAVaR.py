@@ -27,6 +27,7 @@ class PCAVaR(ValueAtRisk):
 			raise Exception('The length of input data and the length of universe data should match')
 		ValueAtRisk.__init__(self,interval,matrix,weights)
 		if(isinstance(universe,pd.DataFrame)):
+			# .fillna(method='ffill',axis=1)
 			universe = universe.values
 		self.universe = universe
 		self.universeReturnMatrix = np.nan_to_num(np.diff(np.log(self.universe),axis=0))
@@ -80,7 +81,7 @@ class PCAVaR(ValueAtRisk):
 		betas = []
 		for i in range(colNum):
 			singlePrice = input[:, i]
-			singleReturn = np.diff(np.log(singlePrice), axis=0)
+			singleReturn = np.nan_to_num(np.diff(np.log(singlePrice), axis=0))
 			betas.append(list(self.betaRegression(singleReturn)))
 		self.betaMatrix = np.array(betas).T
 		self.CovVarMat = np.dot(np.dot(self.betaMatrix.T, self.factorCovVarMat), self.betaMatrix)

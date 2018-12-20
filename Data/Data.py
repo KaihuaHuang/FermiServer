@@ -85,11 +85,11 @@ class FinanceData:
 		# price series for single stock in pandas DataFrame format and use date as index
 
 		if(endDate == None):
-			endDate = dt.date.today() + relativedelta(bdays=-1)
+			endDate = dt.date.today() + relativedelta(bdays=-1,holidays = holidays.US())
 		else:
 			endDate = dt.datetime.strptime(endDate, '%Y-%m-%d').date()
 		if(startDate == None):
-			startDate = endDate + relativedelta(bdays=-252)
+			startDate = endDate + relativedelta(bdays=-252,holidays = holidays.US())
 		else:
 			startDate = dt.datetime.strptime(startDate,'%Y-%m-%d').date()
 

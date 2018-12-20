@@ -36,7 +36,7 @@ class ValueAtRisk:
 		#self.returnMatrix = np.diff(self.input,axis = 0)/self.input[1:]
 
 		# log return calculation
-		self.returnMatrix = np.diff(np.log(self.input),axis=0)
+		self.returnMatrix = np.nan_to_num(np.diff(np.log(self.input),axis=0))
 		if (not isinstance(weights, np.ndarray)):
 			self.weights = np.array(weights)
 		else:

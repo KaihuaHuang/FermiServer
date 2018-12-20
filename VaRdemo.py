@@ -47,7 +47,7 @@ if __name__ =='__main__':
 	# universe = DataSource.getPriceTable(tickerList, startDate, endDate, localCheck='VaR/Data/universe.csv', update=True)
 	# universe = pd.read_csv('Data/universe.csv',index_col = 'date',dtype=float,parse_dates=True)
 
-	ticker = ['AIR',]
+	ticker = ['PX',]
 	singleStock = DataSource.getPriceTable(ticker)
 	# singleStock = pd.read_csv('VaR/Data/singleStock.csv',index_col = 'date',dtype=float,parse_dates=True)
 	PDemoValidation = PCAVaR(0.95,singleStock,universe)
