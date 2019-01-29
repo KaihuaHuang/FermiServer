@@ -106,4 +106,7 @@ venv.bak/
 # idea setting documentation
 /.idea
 
+# vscode setting documentation
+.vscode
+
 

@@ -1,6 +1,11 @@
 from Homework import Homework
+import logging
+logging.basicConfig(format = '%(funcName)s - %(levelname)s:%(message)s',level = logging.DEBUG)
+
+
 
 if __name__ =='__main__':
+	'''
 	tickerList = ['AMZN', 'MSFT', 'GOOG']
 	weight = [0.5, 0.3, 0.2]
 	startDate = '2017-8-10'
@@ -26,10 +31,10 @@ if __name__ =='__main__':
 	print('\nAsset Value:', result['Asset Price'])
 	print('Default Prob:', result['Default Prob'])
 	print('Market Cap:', result['Market Cap'])
-
-	k1 = 900
+	'''
+	k1 = 0
 	t1 = 1
-	k2 = 1100
+	k2 = 900
 	t2 = 2
 
 	ticker = 'AMZN'
@@ -38,7 +43,7 @@ if __name__ =='__main__':
 	div = 0
 	pcFlag = 1
 
-	sharpRatio = 0.23
+	sharpRatio = 1
 	demo = Homework()
 	result = demo.Homework3(ticker, t1, t2, k1, k2, rf, div, sharpRatio, steps=200)
 

@@ -19,6 +19,7 @@ from bdateutil import isbday
 from bdateutil import relativedelta
 import holidays
 import pyodbc
+import logging
 
 
 class Homework:
@@ -82,13 +83,19 @@ class Homework:
 		result = {}
 		vol = self.dataSource.getVol(ticker)
 		marketCap = self.dataSource.getMarketCap(ticker)/1000000000
+		logging.debug(f'{ticker} - MarketCap: {marketCap} Billion')
 		ttm = [t1,t2]
 		Debt = [k1,k2]
 		LiquidA0 = self.Homework2(ticker,ttm,Debt,steps = steps)['Asset Price']
+		logging.debug(f'{ticker} - Liquid Asset Value: {LiquidA0} Billion')
 		temp = math.log((k1+k2)/(LiquidA0-marketCap))
 		adjustFactor = 1-(0.1-temp)*4
+		logging.debug(f'{ticker} - Adjust Factor: {adjustFactor}')
 		W = Liquidity.calibrateWealth(adjustFactor,0,0,0.3,1,1,LiquidA0)
+		logging.debug(f'{ticker} - Wealth: {W}')
 		illquidA0 = Liquidity.illquidPrice(W,W*adjustFactor,t1,rf,sharpRatio,0.3)
+
+		logging.debug(f'{ticker} - Illiquid Asset Value: {illquidA0}')
 		LDemo = Liquidity(k = 1, rf = rf, steps = steps, vol = vol, ttm = t1)
 		LDemo.liquidPrice(s0 = illquidA0,k1= k1,k2 = k2,t1 = t1, t2 = t2,div = div)
 		GDemo = Geske(rf=rf,steps=steps,vol=vol,ttm=t2)
