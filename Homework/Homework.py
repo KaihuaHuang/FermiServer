@@ -91,15 +91,17 @@ class Homework:
 		temp = math.log((k1+k2)/(LiquidA0-marketCap))
 		adjustFactor = 1-(0.1-temp)*4
 		logging.debug(f'{ticker} - Adjust Factor: {adjustFactor}')
-		W = Liquidity.calibrateWealth(adjustFactor,0,0,0.3,1,1,LiquidA0)
-		logging.debug(f'{ticker} - Wealth: {W}')
-		illquidA0 = Liquidity.illquidPrice(W,W*adjustFactor,t1,rf,sharpRatio,0.3)
-
-		logging.debug(f'{ticker} - Illiquid Asset Value: {illquidA0}')
-		LDemo = Liquidity(k = 1, rf = rf, steps = steps, vol = vol, ttm = t1)
-		LDemo.liquidPrice(s0 = illquidA0,k1= k1,k2 = k2,t1 = t1, t2 = t2,div = div)
-		GDemo = Geske(rf=rf,steps=steps,vol=vol,ttm=t2)
-		illquidE0 = GDemo.geske(illquidA0,ttm,Debt)
+		try:
+			W = Liquidity.calibrateWealth(adjustFactor,0,0,0.3,1,1,LiquidA0)
+			logging.debug(f'{ticker} - Wealth: {W}')
+			illquidA0 = Liquidity.illquidPrice(W,W*adjustFactor,t1,rf,sharpRatio,0.3)
+			logging.debug(f'{ticker} - Illiquid Asset Value: {illquidA0}')
+			LDemo = Liquidity(k = 1, rf = rf, steps = steps, vol = vol, ttm = t1)
+			LDemo.liquidPrice(s0 = illquidA0,k1= k1,k2 = k2,t1 = t1, t2 = t2,div = div)
+			GDemo = Geske(rf=rf,steps=steps,vol=vol,ttm=t2)
+			illquidE0 = GDemo.geske(illquidA0,ttm,Debt)
+		except:
+			return -1
 		result['Illiquid Asset'] = illquidA0
 		result['Liquid Asset'] = LiquidA0
 		result['Illiquid Equity'] = illquidE0

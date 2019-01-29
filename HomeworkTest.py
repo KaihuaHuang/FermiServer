@@ -1,6 +1,6 @@
 from Homework import Homework
 import logging
-logging.basicConfig(format = '%(funcName)s - %(levelname)s:%(message)s',level = logging.DEBUG)
+logging.basicConfig(format = '%(funcName)s - %(levelname)s:%(message)s',level = logging.INFO)
 
 
 
@@ -34,7 +34,7 @@ if __name__ =='__main__':
 	'''
 	k1 = 0
 	t1 = 1
-	k2 = 900
+	k2 = 2000
 	t2 = 2
 
 	ticker = 'AMZN'
@@ -46,8 +46,10 @@ if __name__ =='__main__':
 	sharpRatio = 1
 	demo = Homework()
 	result = demo.Homework3(ticker, t1, t2, k1, k2, rf, div, sharpRatio, steps=200)
-
-	print('\nLiquid Asset Value:', result['Liquid Asset'])
-	print('Illiquid Asset Value:', result['Illiquid Asset'])
-	print('Illiquid Equity Value:', result['Illiquid Equity'])
-	print('Market Cap:', result['Market Cap'])
+	if(result == -1):
+		print('Debt or Sharp Ratio is too large')
+	else:
+		print('\nLiquid Asset Value:', result['Liquid Asset'])
+		print('Illiquid Asset Value:', result['Illiquid Asset'])
+		print('Illiquid Equity Value:', result['Illiquid Equity'])
+		print('Market Cap:', result['Market Cap'])
