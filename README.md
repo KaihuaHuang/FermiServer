@@ -1,5 +1,5 @@
-# Homework
-Some financial models for students to learn, including different VaR models, Liquidity model and Geske model.  
+# FermiServer 
+Some financial models for students to learn, including different VaR models, Liquidity model and Geske model. The codes are running on Fordham Fermi Server.
 Current Version: v1.0  
 Version Released: 10/29/2018  
 Third-Party Dependency: numpy, pandas, scipy, sklearn, bdateutil, yahoofinancials	  
