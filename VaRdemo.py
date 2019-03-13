@@ -57,7 +57,7 @@ if __name__ =='__main__':
 	print('Single PCA VaR(Dollar):', PDemoValidation.var(marketValue = 1000000))
 
 	print('\n-------Portfolio PCA VaR---------')
-	portfolioTicker = ['AIR','MMM','DIS','UPS']
+	portfolioTicker = ['AIR','MMM','DIS','P']
 	data = DataSource.getPriceTable(portfolioTicker)
 	# data = pd.read_csv('VaR/Data/portfolio.csv', index_col='date', dtype=float, parse_dates=True)
 	PDemoValidation.setPortfolio(data)

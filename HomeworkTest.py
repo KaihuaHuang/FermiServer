@@ -5,14 +5,14 @@ logging.basicConfig(format = '%(funcName)s - %(levelname)s:%(message)s',level = 
 
 
 if __name__ =='__main__':
-	'''
-	tickerList = ['AMZN', 'MSFT', 'GOOG']
-	weight = [0.5, 0.3, 0.2]
-	startDate = '2017-8-10'
-	endDate = '2018-9-11'
+
+	tickerList = ['P','APLE']
+	weight = [0.4,0.6]
+	startDate = '2018-3-7'
+	endDate = '2019-3-7'
 	notional = 100000
 	# Look back window for historical VaR
-	historicalWindow = 100
+	historicalWindow = 252
 
 	demo = Homework()
 	result = demo.Homework1(tickerList, weight, notional, historicalWindow=historicalWindow)
@@ -20,7 +20,7 @@ if __name__ =='__main__':
 	print('\nHistorical', result['Historical'])
 	print('\nCov-Var Matrix')
 	print(result['Cov-Var Matrix'])
-
+	'''
 	ticker = 'AMZN'
 	rf = 0.05
 	ttm = [1, 2]
@@ -31,7 +31,7 @@ if __name__ =='__main__':
 	print('\nAsset Value:', result['Asset Price'])
 	print('Default Prob:', result['Default Prob'])
 	print('Market Cap:', result['Market Cap'])
-	'''
+	
 	k1 = 0
 	t1 = 1
 	k2 = 2000
@@ -53,3 +53,4 @@ if __name__ =='__main__':
 		print('Illiquid Asset Value:', result['Illiquid Asset'])
 		print('Illiquid Equity Value:', result['Illiquid Equity'])
 		print('Market Cap:', result['Market Cap'])
+	'''

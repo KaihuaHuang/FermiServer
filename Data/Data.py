@@ -26,6 +26,7 @@ class FinanceData:
 			raise Exception("Invalid approach, only allowed Yahoo , not", approach)
 		self.approach = approach
 
+	@staticmethod
 	def columnNameMapping(columns):
 		# Mapping the column names from different data source to unitized names
 		# ----Input-----
